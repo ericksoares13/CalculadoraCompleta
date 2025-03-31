@@ -138,13 +138,29 @@ public class MainActivity extends Activity {
                 final String deletedChar = String.valueOf(visor.getText().charAt(length - 1));
                 visor.getText().delete(length - 1, length);
 
-                if (deletedChar.equals("+") || deletedChar.equals("-") || deletedChar.equals("*") || deletedChar.equals("/")) {
+                if (length == 1 && this.isNegativeResult) {
+                    this.isNegativeResult = false;
+                } else if (deletedChar.equals("+") || deletedChar.equals("-") || deletedChar.equals("*") || deletedChar.equals("/")) {
                     this.operations.clear();
                 } else if (deletedChar.equals(".")) {
                     if (this.operations.isEmpty()) {
                         this.number1IsDecimal = false;
                     } else {
                         this.number2IsDecimal = false;
+                    }
+                } else {
+                    if (this.operations.isEmpty()) {
+                        if (this.number1IsDecimal) {
+                            this.number1Decimal.poll();
+                        } else {
+                            this.number1Integer.poll();
+                        }
+                    } else {
+                        if (this.number2IsDecimal) {
+                            this.number2Decimal.poll();
+                        } else {
+                            this.number2Integer.poll();
+                        }
                     }
                 }
             }
