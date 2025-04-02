@@ -11,12 +11,12 @@ import java.util.Queue;
 
 public class MainActivity extends Activity {
 
-    private final Queue<Integer> number1Integer = new LinkedList<>();
-    private final Queue<Integer> number1Decimal = new LinkedList<>();
+    private final Queue<String> number1Integer = new LinkedList<>();
+    private final Queue<String> number1Decimal = new LinkedList<>();
     private boolean number1IsDecimal = false;
 
-    private final Queue<Integer> number2Integer = new LinkedList<>();
-    private final Queue<Integer> number2Decimal = new LinkedList<>();
+    private final Queue<String> number2Integer = new LinkedList<>();
+    private final Queue<String> number2Decimal = new LinkedList<>();
     private boolean number2IsDecimal = false;
 
     private final Queue<String> operations = new LinkedList<>();
@@ -54,8 +54,7 @@ public class MainActivity extends Activity {
     public void clickNumber(final View view) {
         this.clearVisor();
 
-        final String numberText = view.getTag().toString();
-        final int number = Integer.parseInt(numberText);
+        final String number = view.getTag().toString();
 
         if (this.operations.isEmpty()) {
             if (this.number1IsDecimal) {
@@ -72,7 +71,7 @@ public class MainActivity extends Activity {
         }
 
         final EditText visor = this.findViewById(R.id.visor);
-        visor.getText().append(numberText);
+        visor.getText().append(number);
     }
 
     public void clickDot(final View view) {
@@ -167,19 +166,20 @@ public class MainActivity extends Activity {
         }
     }
 
-    private double convertNumber(final Queue<Integer> numberInteger, final Queue<Integer> numberDecimal) {
-        int integer = 0;
-        int decimal = 0;
+    private double convertNumber(final Queue<String> numberInteger, final Queue<String> numberDecimal) {
+        final StringBuilder number = new StringBuilder();
 
         while (!numberInteger.isEmpty()) {
-            integer += (int) (Math.pow(10, numberInteger.size() - 1) * numberInteger.poll());
+            number.append(numberInteger.poll());
         }
+
+        number.append(".");
 
         while (!numberDecimal.isEmpty()) {
-            decimal += (int) (Math.pow(10, numberDecimal.size() - 1) * numberDecimal.poll());
+            number.append(numberDecimal.poll());
         }
 
-        return Double.parseDouble(integer + "." + decimal);
+        return Double.parseDouble(number.toString());
     }
 
     private String executeOperation() {
@@ -221,12 +221,10 @@ public class MainActivity extends Activity {
             } else if (actualChar.equals(".")) {
                 this.number1IsDecimal = true;
             } else {
-                final int number = Integer.parseInt(actualChar);
-
                 if (this.number1IsDecimal) {
-                    this.number1Decimal.add(number);
+                    this.number1Decimal.add(actualChar);
                 } else {
-                    this.number1Integer.add(number);
+                    this.number1Integer.add(actualChar);
                 }
             }
         });
